@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validate WKT Geom</title>
+    <script src="https://unpkg.com/jsts@1.6.1/dist/jsts.min.js"></script>
+    <style>
+        #result {
+            margin-left: 25px;
+        }
+        #check_geom {
+            margin: 0px 0px 25px 25px;
+        }
+        .default_geom {
+            margin: 25px;
+        }
+        .valid_geom {
+            /* border-color: yellowgreen;
+            border-width: 10px;
+            border-radius: 5px; */
+            margin: 25px;
+            box-shadow: 0px 0px 25px yellowgreen;
+         }
+         .invalid_geom {
+            /* border-color: yellowgreen;
+            border-width: 10px;
+            border-radius: 5px; */
+            margin: 25px;
+            box-shadow: 0px 0px 25px firebrick;
+         }
+    </style>
+
+</head>
+<body>
+    <p>Insert a WKT geometry in the text area below and click the "Test Geometry" button.</p>
+    <div id="geom_entry">
+        <textarea class="default_geom" name="input_geom" id="input_geom" cols="70" rows="15" placeholder="Insert the WKT geometry..."></textarea>
+        <label for="input_geom"></label>
+    </div>
+    <div>
+        <button id="check_geom">Test Geometry</button><span id="result">The result will appear here!</span>
+    </div>
+    <div id="errors"></div>
+    <script>
+        function test_geom() {
+            document.getElementById("errors").innerHTML = ""
+            text_area_geom = document.getElementById("input_geom").value;
+            try {
+                var geom = reader.read(text_area_geom); // WKT Geometry representation
+            }
+            catch(err) {
+                document.getElementById("errors").innerHTML = "Could not parse WKT geometry"// err.message;
+            }
+            var isGeomValid = jsts.operation.valid.IsValidOp.isValid(geom); // Boolean. True is geometry is valid, false otherwise.
+            if (isGeomValid) {
+                document.getElementById("result").innerHTML = "VALID";
+                document.getElementById("input_geom").className = "valid_geom";
+            } else {
+                document.getElementById("result").innerHTML = "NOT VALID";
+                document.getElementById("input_geom").className = "invalid_geom";
+            }
+        }
+
+        var reader = new jsts.io.WKTReader()
+        document.getElementById("check_geom").addEventListener("click", test_geom)
+        
+
+    </script>
+</body>
+</html>
